@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Table
 @Entity
@@ -18,4 +20,6 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String genre;
+    @OneToMany(mappedBy ="cinema")
+    private List<Movie> movie;
 }
