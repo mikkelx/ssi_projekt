@@ -1,32 +1,26 @@
 package org.example.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import lombok.*;
 import org.example.util.Role;
 
-import javax.persistence.*;
 import java.util.List;
 
-@Entity
-@Table
+@DatabaseTable(tableName = "User")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @DatabaseField(id = true, columnName = "userId")
     private Long id;
+    @DatabaseField(columnName = "username")
     private String username;
+    @DatabaseField(columnName = "password")
     private String password;
-    private Role role;
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name = "users_movies",
-            joinColumns = {@JoinColumn(name = "userId")},
-            inverseJoinColumns = {@JoinColumn(name = "movieId")}
-    )
+    @DatabaseField(columnName = "role")
+    private String role;
     private List<Movie> favouriteMovies;
 }
