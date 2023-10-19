@@ -3,10 +3,7 @@ package org.example.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,9 +12,14 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Genre {
     @DatabaseField(generatedId = true, columnName = "genreId")
-    private Long id;
-    @DatabaseField(columnName = "genre")
-    private String genre;
+    private Integer id;
+    @DatabaseField(columnName = "genreName")
+    private String genreName;
+
+    public Genre(String name) {
+        this.genreName = name;
+    }
 }

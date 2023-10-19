@@ -15,7 +15,7 @@ import java.util.List;
 @ToString
 public class User {
     @DatabaseField(id = true, columnName = "userId")
-    private Long id;
+    private Integer id;
     @DatabaseField(columnName = "username")
     private String username;
     @DatabaseField(columnName = "password")
@@ -23,4 +23,11 @@ public class User {
     @DatabaseField(columnName = "role")
     private String role;
     private List<Movie> favouriteMovies;
+
+    public User(String username, String password, String role, List<Movie> favouriteMovies) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.favouriteMovies = favouriteMovies;
+    }
 }
