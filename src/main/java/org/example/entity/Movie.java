@@ -14,7 +14,7 @@ import java.util.Date;
 @Setter
 @ToString
 public class Movie {
-    @DatabaseField(generatedId = true, columnName = "movieId")
+    @DatabaseField(id = true, columnName = "movieId")
     private Integer id;
     @DatabaseField(columnName = "title")
     private String title;
@@ -22,7 +22,7 @@ public class Movie {
     private Date releaseDate;
     @DatabaseField(columnName = "rating")
     private double rating;
-    @DatabaseField(columnName = "genreId", foreign = true, foreignAutoCreate = true)
+    @DatabaseField(columnName = "genreId", foreign = true)
     private Genre genre;
 
     public Movie(String title, Date releaseDate, double rating, Genre genre) {
