@@ -23,8 +23,7 @@ public class GenreController {
         List<Genre> genres = genreDao.getGenreDao().queryForAll();
         return objectMapper.writeValueAsString(genres);
     };
-
-    //TODO - add searching genre by it's name
+    
     public static Route getGenreByName = (Request request, Response response) -> {
         response.type("application/json");
         String genreName = request.params("genreName");
