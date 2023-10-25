@@ -14,12 +14,8 @@ import java.util.List;
 @Setter
 @ToString
 public class Genre {
-    @DatabaseField(generatedId = true, columnName = "genreId")
+    @DatabaseField(id = true, columnName = "genreId")
     private Integer id;
-    @DatabaseField(columnName = "genreName")
+    @DatabaseField(columnName = "name")
     private String genreName;
-
-    public Genre(String name) {
-        this.genreName = name;
-    }
 }

@@ -17,24 +17,23 @@ public class ApplicationMain {
         try {
             MovieDao movieDao = MovieDao.getInstance();
             UserDao userDao = UserDao.getInstance();
-//            GenreDao genreDao = GenreDao.getInstance();
-            Dao<Genre, Integer> genreDao = DaoManager.createDao(JDBCConnection.getInstance().getConnection(), Genre.class);
+            GenreDao genreDao = GenreDao.getInstance();
 
 
-            Genre genre = new Genre("thriller");
-            genreDao.create(genre);
-//            Movie newMovie = new Movie("Tytul", new Date(), 9.0, new Genre("thriller"));
-//            movieDao.getMovieDao().create(newMovie);
+            Genre genre = new Genre(1234 ,"drama");
+//            genreDao.getGenreDao().create(genre);
+            Movie newMovie = new Movie(100, "Tytul", new Date(), 9.0, genre);
+            movieDao.getMovieDao().create(newMovie);
 
             for (Movie movie : movieDao.getMovieDao().queryForAll()) {
                 System.out.println(movie);
                 System.out.println();
             }
-            User user = new User("test", "test", "X", null);
-            userDao.getUserDao().create(user);
-            for (User user1 : userDao.getUserDao().queryForAll()) {
-                System.out.println(user1);
-            }
+//            User user = new User("test1", "test2", "X", null);
+//            userDao.getUserDao().create(user);
+//            for (User user1 : userDao.getUserDao().queryForAll()) {
+//                System.out.println(user1);
+//            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
