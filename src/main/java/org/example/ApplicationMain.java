@@ -20,17 +20,17 @@ public class ApplicationMain {
             GenreDao genreDao = GenreDao.getInstance();
 
 
-            Genre genre = new Genre(1234 ,"drama");
-//            genreDao.getGenreDao().create(genre);
-            Movie newMovie = new Movie(100, "Tytul", new Date(), 9.0, genre);
+            Genre genre = new Genre("dramattttt");
+            genreDao.getGenreDao().create(genre);
+            Movie newMovie = new Movie("Nowy-Tytul", new Date(), 9.0, genre);
             movieDao.getMovieDao().create(newMovie);
 
             for (Movie movie : movieDao.getMovieDao().queryForAll()) {
                 System.out.println(movie);
                 System.out.println();
             }
-//            User user = new User("test1", "test2", "X", null);
-//            userDao.getUserDao().create(user);
+            User user = new User("test1", "test2", "X", null);
+            userDao.getUserDao().create(user);
 //            for (User user1 : userDao.getUserDao().queryForAll()) {
 //                System.out.println(user1);
 //            }

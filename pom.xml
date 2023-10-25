@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.43.2.0</version>
+            <version>3.34.0</version> <!-- Wersję możesz dostosować do najnowszej dostępnej -->
         </dependency>
 
         <!-- Jackson JSON -->
