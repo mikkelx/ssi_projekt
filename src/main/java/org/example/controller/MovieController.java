@@ -75,10 +75,10 @@ public class MovieController {
     };
 
     public static void registerRoutes() {
-        get("/movies", getAllMovies);
-        get("/movies/:movieId", getMovieById);
-        post("/movies", createMovie);
-        delete("/movies/:movieId", deleteMovie);
+        get("/movie", getAllMovies);
+        get("/movie/:movieId", getMovieById);
+        post("/movie", createMovie);
+        delete("/movie/:movieId", deleteMovie);
     }
 
 }

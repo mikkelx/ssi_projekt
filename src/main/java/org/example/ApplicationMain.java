@@ -1,7 +1,9 @@
 package org.example;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import org.example.controller.GenreController;
 import org.example.controller.MovieController;
+import org.example.controller.UserController;
 import org.example.dao.GenreDao;
 import org.example.dao.JDBCConnection;
 import org.example.dao.MovieDao;
@@ -18,7 +20,6 @@ import static spark.Spark.get;
 
 public class ApplicationMain {
     public static void main(String[] args) {
-
         /*
         try {
             MovieDao movieDao = MovieDao.getInstance();
@@ -26,8 +27,9 @@ public class ApplicationMain {
             GenreDao genreDao = GenreDao.getInstance();
 
 
-            Genre genre = new Genre("dramattttt");
-            genreDao.getGenreDao().create(genre);
+            Genre genre = new Genre("Horror");
+            genreDao.getGenreDao().update(genre);
+            Integer id = genreDao.getGenreDao().extractId(genre);
             Movie newMovie = new Movie("Nowy-Tytul", new Date(), 9.0, genre);
             movieDao.getMovieDao().create(newMovie);
 
@@ -35,17 +37,20 @@ public class ApplicationMain {
                 System.out.println(movie);
                 System.out.println();
             }
-            User user = new User("test1", "test2", "X", null);
-            userDao.getUserDao().create(user);
-            for (User user1 : userDao.getUserDao().queryForAll()) {
-                System.out.println(user1);
-            }
+//            User user = new User("test1", "test2", "X", null);
+//            userDao.getUserDao().create(user);
+//            for (User user1 : userDao.getUserDao().queryForAll()) {
+//                System.out.println(user1);
+//            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        */
+         */
+
         Spark.init();
         MovieController.registerRoutes();
+        UserController.registerRoutes();
+        GenreController.registerRoutes();
         Spark.awaitInitialization();
         get("/hello", (req, res) -> "Hello World");
     }

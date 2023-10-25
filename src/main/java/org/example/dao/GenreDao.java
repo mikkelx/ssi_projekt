@@ -2,9 +2,12 @@ package org.example.dao;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import org.example.entity.Genre;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class GenreDao {
     private static GenreDao instance;
@@ -31,6 +34,22 @@ public class GenreDao {
 
     public Dao<Genre, Integer> getGenreDao() {
         return genreDao;
+    }
+
+    //TODO - method to save only uniqie values of Genre
+    // We would like to avoid scenario with duplicated Genres
+//    public Integer create(Genre genre) throws SQLException {
+//        genreDao.createIfNotExists(genre)''
+//
+//    }
+
+    public Genre getGenreByName(String genreName) throws SQLException {
+        QueryBuilder<Genre, Integer> genreQueryBuilder = genreDao.queryBuilder();
+        Where<Genre, Integer> where = genreQueryBuilder.where();
+        where.eq("name", genreName);
+        List<Genre> genres = genreQueryBuilder.query();
+
+        return genres.get(0);
     }
 
 }
