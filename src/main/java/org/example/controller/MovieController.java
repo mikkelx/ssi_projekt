@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import org.example.dao.MovieDao;
 import org.example.entity.Movie;
+import org.example.exceptions.ResourceNotFoundException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -19,6 +20,8 @@ public class MovieController {
     private static MovieDao movieDao = MovieDao.getInstance();
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final String DOMAIN = "Film";
 
     static {
         // data w formacie "yyyy-MM-dd"
@@ -39,38 +42,26 @@ public class MovieController {
         if (movie != null) {
             return objectMapper.writeValueAsString(movie);
         } else {
-            response.status(404);
-            return "Film o podanym ID nie został znaleziony.";
+            throw new ResourceNotFoundException(DOMAIN, movieId);
         }
     };
 
     public static Route createMovie = (Request request, Response response) -> {
         response.type("application/json");
         Movie newMovie = objectMapper.readValue(request.body(), Movie.class);
-        try {
-            movieDao.getMovieDao().create(newMovie);
-            response.status(201); // Status 201 Created
-            return objectMapper.writeValueAsString(newMovie);
-        } catch (SQLException e) {
-            response.status(500);
-            return "Wystąpił błąd podczas zapisywania filmu.";
-        }
+        int id = movieDao.getMovieDao().create(newMovie);
+        response.status(201); // Status 201 Created
+        return objectMapper.writeValueAsString(id);
     };
 
     public static Route deleteMovie = (Request request, Response response) -> {
         int movieId = Integer.parseInt(request.params("movieId"));
-        try {
-            int deleted = movieDao.getMovieDao().deleteById(movieId);
-            if (deleted == 1) {
-                response.status(200);
-                return "";
-            } else {
-                response.status(404);
-                return "Film o podanym ID nie został znaleziony.";
-            }
-        } catch (SQLException e) {
-            response.status(500);
-            return "Wystąpił błąd podczas usuwania filmu.";
+        int deleted = movieDao.getMovieDao().deleteById(movieId);
+        if (deleted == 1) {
+            response.status(200);
+            return "";
+        } else {
+            throw new ResourceNotFoundException(DOMAIN, movieId);
         }
     };
 

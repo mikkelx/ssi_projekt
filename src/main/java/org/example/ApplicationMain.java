@@ -1,20 +1,9 @@
 package org.example;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
+import org.example.exceptions.ExceptionHandler;
 import org.example.controller.GenreController;
 import org.example.controller.MovieController;
 import org.example.controller.UserController;
-import org.example.dao.GenreDao;
-import org.example.dao.JDBCConnection;
-import org.example.dao.MovieDao;
-import org.example.dao.UserDao;
-import org.example.entity.Genre;
-import org.example.entity.Movie;
-import org.example.entity.User;
 import spark.Spark;
-
-import java.sql.SQLException;
-import java.util.Date;
 
 import static spark.Spark.get;
 
@@ -51,6 +40,7 @@ public class ApplicationMain {
         MovieController.registerRoutes();
         UserController.registerRoutes();
         GenreController.registerRoutes();
+        ExceptionHandler.registerExceptions();
         Spark.awaitInitialization();
         get("/hello", (req, res) -> "Hello World");
     }

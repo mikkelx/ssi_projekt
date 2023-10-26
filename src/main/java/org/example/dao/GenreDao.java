@@ -5,11 +5,13 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import org.example.entity.Genre;
+import org.example.exceptions.ResourceNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class GenreDao {
+    private static final String DOMAIN = "Gatunek";
     private static GenreDao instance;
     Dao<Genre, Integer> genreDao;
 
@@ -43,12 +45,14 @@ public class GenreDao {
 //
 //    }
 
-    public Genre getGenreByName(String genreName) throws SQLException {
+    public Genre getGenreByName(String genreName) throws SQLException, ResourceNotFoundException {
         QueryBuilder<Genre, Integer> genreQueryBuilder = genreDao.queryBuilder();
         Where<Genre, Integer> where = genreQueryBuilder.where();
         where.eq("name", genreName);
         List<Genre> genres = genreQueryBuilder.query();
-
+        if (genres.isEmpty()) {
+            throw new ResourceNotFoundException(DOMAIN, genreName);
+        }
         return genres.get(0);
     }
 

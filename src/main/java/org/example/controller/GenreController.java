@@ -3,6 +3,7 @@ package org.example.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dao.GenreDao;
 import org.example.entity.Genre;
+import org.example.exceptions.ResourceNotFoundException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -18,22 +19,19 @@ public class GenreController {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final String DOMAIN = "Gatunek";
+
     public static Route getAllGenres = (Request request, Response response) -> {
         response.type("application/json");
         List<Genre> genres = genreDao.getGenreDao().queryForAll();
         return objectMapper.writeValueAsString(genres);
     };
-    
+
     public static Route getGenreByName = (Request request, Response response) -> {
         response.type("application/json");
         String genreName = request.params("genreName");
         Genre genre = genreDao.getGenreByName(genreName);
-        if (genre != null) {
-            return objectMapper.writeValueAsString(genre);
-        } else {
-            response.status(404);
-            return "Gatunek o podanym genreName nie został znaleziony.";
-        }
+        return objectMapper.writeValueAsString(genre);
     };
 
     public static Route getGenreById = (Request request, Response response) -> {
@@ -43,38 +41,26 @@ public class GenreController {
         if (genre != null) {
             return objectMapper.writeValueAsString(genre);
         } else {
-            response.status(404);
-            return "Gatunek o podanym ID nie został znaleziony.";
+            throw new ResourceNotFoundException(DOMAIN, genreId);
         }
     };
 
     public static Route createGenre = (Request request, Response response) -> {
         response.type("application/json");
         Genre newGenre = objectMapper.readValue(request.body(), Genre.class);
-        try {
-            genreDao.getGenreDao().create(newGenre);
-            response.status(201);
-            return objectMapper.writeValueAsString(newGenre);
-        } catch (SQLException e) {
-            response.status(500);
-            return "Wystąpił błąd podczas tworzenia gatunku.";
-        }
+        genreDao.getGenreDao().create(newGenre);
+        response.status(201);
+        return objectMapper.writeValueAsString(newGenre);
     };
 
     public static Route deleteGenre = (Request request, Response response) -> {
         int genreId = Integer.parseInt(request.params("genreId"));
-        try {
-            int deleted = genreDao.getGenreDao().deleteById(genreId);
-            if (deleted == 1) {
-                response.status(200);
-                return "";
-            } else {
-                response.status(404);
-                return "Gatunek o podanym ID nie został znaleziony.";
-            }
-        } catch (SQLException e) {
-            response.status(500);
-            return "Wystąpił błąd podczas usuwania gatunku.";
+        int deleted = genreDao.getGenreDao().deleteById(genreId);
+        if (deleted == 1) {
+            response.status(200);
+            return "";
+        } else {
+            throw new ResourceNotFoundException(DOMAIN, genreId);
         }
     };
 
