@@ -1,16 +1,18 @@
 package org.example.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.Service.UserService;
 import org.example.dao.UserDao;
 import org.example.entity.User;
 import org.example.exceptions.ResourceNotFoundException;
+import org.example.request.LoginRequest;
+import org.example.request.RegisterRequest;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
@@ -23,32 +25,38 @@ public class UserController {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Route getAllUsers = (Request request, Response response) -> {
+    private final UserService userService = UserService.getInstance();
+
+
+    public Route getAllUsers = (Request request, Response response) -> {
         response.type("application/json");
-        List<User> users = userDao.getUserDao().queryForAll();
+        List<User> users = userDao.getUserDao().queryForAll().stream().
+                peek(user -> user.setPassword(""))
+                .collect(Collectors.toList());
         return objectMapper.writeValueAsString(users);
     };
 
-    public static Route getUserById = (Request request, Response response) -> {
+    public Route getUserById = (Request request, Response response) -> {
         response.type("application/json");
         int userId = Integer.parseInt(request.params("userId"));
         User user = userDao.getUserDao().queryForId(userId);
         if (user != null) {
+            user.setPassword("");
             return objectMapper.writeValueAsString(user);
         } else {
             throw new ResourceNotFoundException(DOMAIN, userId);
         }
     };
 
-    public static Route createUser = (Request request, Response response) -> {
+    public Route registerUser = (Request request, Response response) -> {
         response.type("application/json");
-        User newUser = objectMapper.readValue(request.body(), User.class);
-        int id = userDao.getUserDao().create(newUser);
+        RegisterRequest registerRequest = objectMapper.readValue(request.body(), RegisterRequest.class);
+        String id = userService.register(registerRequest);
         response.status(201);
         return objectMapper.writeValueAsString(id);
     };
 
-    public static Route deleteUser = (Request request, Response response) -> {
+    public Route deleteUser = (Request request, Response response) -> {
         int userId = Integer.parseInt(request.params("userId"));
         int deleted = userDao.getUserDao().deleteById(userId);
         if (deleted == 1) {
@@ -59,11 +67,22 @@ public class UserController {
         }
     };
 
-    public static void registerRoutes() {
-        get("/user", getAllUsers);
-        get("/user/:userId", getUserById);
-        post("/user", createUser);
-        delete("/user/:userId", deleteUser);
+    public Route loginUser = (Request request, Response response) -> {
+        response.type("application/json");
+        LoginRequest loginRequest = objectMapper.readValue(request.body(), LoginRequest.class);
+        String jwt = userService.login(loginRequest);
+        response.status(201);
+        return jwt;
+    };
+
+    public void registerRoutes() {
+        get("/admin/user", getAllUsers);
+        get("/admin/user/:userId", getUserById);
+        post("/user/register", registerUser);
+        post("/user/login", loginUser);
+        delete("/admin/user/:userId", deleteUser);
     }
+
+
 }
 

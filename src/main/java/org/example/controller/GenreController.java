@@ -68,8 +68,8 @@ public class GenreController {
         get("/genre", getAllGenres);
         get("/genre/:genreId", getGenreById);
         get("/genre/name/:genreName", getGenreByName);
-        post("/genre", createGenre);
-        delete("/genre/:genreId", deleteGenre);
+        post("/admin/genre", createGenre);
+        delete("/admin/genre/:genreId", deleteGenre);
     }
 }
 

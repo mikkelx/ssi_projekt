@@ -5,6 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
 import org.example.util.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DatabaseTable(tableName = "User")
@@ -24,10 +25,10 @@ public class User {
     private String role;
     private List<Movie> favouriteMovies;
 
-    public User(String username, String password, String role, List<Movie> favouriteMovies) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.favouriteMovies = favouriteMovies;
+        this.favouriteMovies = new ArrayList<>();
     }
 }
