@@ -53,7 +53,7 @@ public class UserController {
         RegisterRequest registerRequest = objectMapper.readValue(request.body(), RegisterRequest.class);
         String id = userService.register(registerRequest);
         response.status(201);
-        return objectMapper.writeValueAsString(id);
+        return "";
     };
 
     public Route deleteUser = (Request request, Response response) -> {

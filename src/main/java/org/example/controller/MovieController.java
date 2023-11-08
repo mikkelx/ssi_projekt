@@ -29,13 +29,13 @@ public class MovieController {
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    public static Route getAllMovies = (Request request, Response response) -> {
+    public Route getAllMovies = (Request request, Response response) -> {
         response.type("application/json");
         List<Movie> movies = movieDao.getMovieDao().queryForAll();
         return objectMapper.writeValueAsString(movies);
     };
 
-    public static Route getMovieById = (Request request, Response response) -> {
+    public Route getMovieById = (Request request, Response response) -> {
         response.type("application/json");
         int movieId = Integer.parseInt(request.params("movieId"));
         Movie movie = movieDao.getMovieDao().queryForId(movieId);
@@ -46,7 +46,7 @@ public class MovieController {
         }
     };
 
-    public static Route createMovie = (Request request, Response response) -> {
+    public Route createMovie = (Request request, Response response) -> {
         response.type("application/json");
         Movie newMovie = objectMapper.readValue(request.body(), Movie.class);
         int id = movieDao.getMovieDao().create(newMovie);
@@ -54,7 +54,7 @@ public class MovieController {
         return objectMapper.writeValueAsString(id);
     };
 
-    public static Route deleteMovie = (Request request, Response response) -> {
+    public Route deleteMovie = (Request request, Response response) -> {
         int movieId = Integer.parseInt(request.params("movieId"));
         int deleted = movieDao.getMovieDao().deleteById(movieId);
         if (deleted == 1) {
@@ -65,7 +65,7 @@ public class MovieController {
         }
     };
 
-    public static void registerRoutes() {
+    public void registerRoutes() {
         get("/movie", getAllMovies);
         get("/movie/:movieId", getMovieById);
         post("/admin/movie", createMovie);
