@@ -2,10 +2,13 @@ package org.example.Service;
 
 import org.example.dao.UserDao;
 import org.example.entity.User;
-import org.example.util.RegisterRequest;
+import org.example.exceptions.ResourceNotFoundException;
+import org.example.request.LoginRequest;
+import org.example.request.RegisterRequest;
 
 import java.sql.SQLException;
-import java.util.regex.Pattern;
+
+import static spark.Spark.halt;
 
 public class UserService {
 
@@ -13,8 +16,11 @@ public class UserService {
 
     private static UserDao userDao;
 
+    private static SecurityService securityService;
+
     private UserService() {
         userDao = UserDao.getInstance();
+        securityService = SecurityService.getInstance();
     }
 
     public static UserService getInstance() {
@@ -28,13 +34,50 @@ public class UserService {
         return instance;
     }
 
+    public String register(RegisterRequest registerRequest) {
+        if(!isRegisterRequestValid(registerRequest)) {
+            return "Register request is invalid";
+        }
 
+        if(checkIfUserExists(registerRequest.getUsername())) { //409 resource conflict
+            return "User with username: " + registerRequest.getUsername() + " is already registered!";
+        }
 
-    private boolean isEmailValid(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        Pattern pattern = Pattern.compile(emailRegex);
+        if(!verifyPassword(registerRequest.getPassword(), registerRequest.getPasswordRepeated())) {
+            return "Password is not matching conditions";
+        }
 
-        return pattern.matcher(email).matches();
+        User user = new User(
+                registerRequest.getUsername(),
+                registerRequest.getPassword(),
+                "CLIENT"
+        );
+
+        String id = null;
+        try {
+            id = String.valueOf(userDao.getUserDao().create(user));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return id;
+    }
+
+    public String login(LoginRequest loginRequest) {
+        try {
+            User user = userDao.getUserByUsername(loginRequest.getUsername());
+            if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
+                halt(401, "Invalid username or password");
+            }
+
+            String jwt = securityService.createJWT(user.getId().toString(), user.getUsername(), user.getRole());
+
+            return jwt;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ResourceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean verifyPassword(String password, String repeatedPassword) {
@@ -70,9 +113,6 @@ public class UserService {
         if (request == null)
             return false;
 
-        if (request.getEmail() == null || request.getEmail().isEmpty()) {
-            return false;
-        }
 
         if (request.getPassword() == null || request.getPassword().isEmpty()) {
             return false;
@@ -93,25 +133,20 @@ public class UserService {
         return true;
     }
 
-
-    public String register(RegisterRequest registerRequest) {
-        if(!isRegisterRequestValid(registerRequest)) {
-            return "Register request is invalid";
+    private boolean checkIfUserExists(String username) {
+        User user = null;
+        try {
+            user = userDao.getUserByUsername(username);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error during user verification with username: " + username);
+        } catch (ResourceNotFoundException e) {
+            return false;
         }
 
-        if(checkIfUserExists(registerRequest.getEmail())) { //409 resource conflict
-            return "User with email: " + registerRequest.getEmail() + " is already registered!";
-        }
-
-        if(!verifyPassword(registerRequest.getPassword(), registerRequest.getPasswordRepeated())) {
-            return "Password is not matching conditions";
-        }
-
-        if(!isEmailValid(registerRequest.getEmail())) {
-            return "Email is not matching requirements";
-        }
-
+        return user != null;
     }
+
+
 
 
 }

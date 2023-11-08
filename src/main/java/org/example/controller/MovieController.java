@@ -68,8 +68,8 @@ public class MovieController {
     public static void registerRoutes() {
         get("/movie", getAllMovies);
         get("/movie/:movieId", getMovieById);
-        post("/movie", createMovie);
-        delete("/movie/:movieId", deleteMovie);
+        post("/admin/movie", createMovie);
+        delete("/admin/movie/:movieId", deleteMovie);
     }
 
 }

@@ -2,11 +2,15 @@ package org.example.dao;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import org.example.entity.Movie;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import org.example.entity.User;
+import org.example.exceptions.ResourceNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
+
+
 
 public class UserDao {
     private static UserDao instance;
@@ -33,6 +37,17 @@ public class UserDao {
 
     public Dao<User, Integer> getUserDao() {
         return userDao;
+    }
+
+    public User getUserByUsername(String username) throws SQLException, ResourceNotFoundException {
+        QueryBuilder<User, Integer> genreQueryBuilder = userDao.queryBuilder();
+        Where<User, Integer> where = genreQueryBuilder.where();
+        where.eq("username", username);
+        List<User> users = genreQueryBuilder.query();
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("User", username);
+        }
+        return users.get(0);
     }
 }
 
