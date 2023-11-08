@@ -2,9 +2,11 @@ package org.example.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.Service.UserService;
 import org.example.dao.UserDao;
 import org.example.entity.User;
 import org.example.exceptions.ResourceNotFoundException;
+import org.example.util.RegisterRequest;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -23,6 +25,9 @@ public class UserController {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private UserService userService = UserService.getInstance();
+
+
     public static Route getAllUsers = (Request request, Response response) -> {
         response.type("application/json");
         List<User> users = userDao.getUserDao().queryForAll();
@@ -40,10 +45,10 @@ public class UserController {
         }
     };
 
-    public static Route createUser = (Request request, Response response) -> {
+    public Route registerUser = (Request request, Response response) -> {
         response.type("application/json");
-        User newUser = objectMapper.readValue(request.body(), User.class);
-        int id = userDao.getUserDao().create(newUser);
+        RegisterRequest registerRequest = objectMapper.readValue(request.body(), RegisterRequest.class);
+        userService.register(registerRequest);
         response.status(201);
         return objectMapper.writeValueAsString(id);
     };
@@ -62,7 +67,7 @@ public class UserController {
     public static void registerRoutes() {
         get("/user", getAllUsers);
         get("/user/:userId", getUserById);
-        post("/user", createUser);
+        post("/user", registerUser);
         delete("/user/:userId", deleteUser);
     }
 }
