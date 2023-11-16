@@ -10,7 +10,6 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static spark.Spark.*;

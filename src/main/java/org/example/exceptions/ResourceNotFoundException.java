@@ -1,7 +1,6 @@
 package org.example.exceptions;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class ResourceNotFoundException extends Exception{

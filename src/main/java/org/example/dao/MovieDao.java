@@ -2,12 +2,9 @@ package org.example.dao;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.support.ConnectionSource;
 import org.example.entity.Movie;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class MovieDao {
     private static MovieDao instance;

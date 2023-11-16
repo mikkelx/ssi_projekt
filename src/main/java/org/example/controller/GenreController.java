@@ -3,6 +3,7 @@ package org.example.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dao.GenreDao;
 import org.example.entity.Genre;
+import org.example.exceptions.ResourceAlreadyExistsException;
 import org.example.exceptions.ResourceNotFoundException;
 import spark.Request;
 import spark.Response;
@@ -48,7 +49,11 @@ public class GenreController {
     public Route createGenre = (Request request, Response response) -> {
         response.type("application/json");
         Genre newGenre = objectMapper.readValue(request.body(), Genre.class);
-        genreDao.getGenreDao().create(newGenre);
+        try {
+            genreDao.getGenreDao().create(newGenre);
+        } catch (SQLException e) {
+            throw new ResourceAlreadyExistsException();
+        }
         response.status(201);
         return objectMapper.writeValueAsString(newGenre);
     };

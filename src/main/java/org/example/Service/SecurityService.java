@@ -1,7 +1,6 @@
 package org.example.Service;
 
 import io.jsonwebtoken.*;
-import org.example.util.Role;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;

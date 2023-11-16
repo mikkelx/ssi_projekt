@@ -1,9 +1,11 @@
 package org.example;
-import org.example.exceptions.ExceptionHandler;
+
+import org.example.Service.SecurityService;
+import org.example.controller.FavouriteController;
 import org.example.controller.GenreController;
 import org.example.controller.MovieController;
 import org.example.controller.UserController;
-import org.example.Service.SecurityService;
+import org.example.exceptions.ExceptionHandler;
 import spark.Spark;
 
 public class ApplicationMain {
@@ -16,12 +18,14 @@ public class ApplicationMain {
         UserController userController = new UserController();
         MovieController movieController = new MovieController();
         GenreController genreController = new GenreController();
+        FavouriteController favouriteController = new FavouriteController();
 
         securityService.registerSecurityRoutes();
 
         movieController.registerRoutes();
         userController.registerRoutes();
         genreController.registerRoutes();
+        favouriteController.registerRoutes();
 
         ExceptionHandler.registerExceptions();
 

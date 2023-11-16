@@ -13,10 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Favourite {
-    @DatabaseField(id = true, columnName = "favouriteId")
-    private Long id;
-    @DatabaseField(columnName = "movieId", foreign = true)
+    @DatabaseField(generatedId = true, columnName = "favouriteId")
+    private int id;
+    @DatabaseField(columnName = "movieId", foreign = true, foreignAutoRefresh = true)
     private Movie movie;
     @DatabaseField(columnName = "userId")
-    private Long userId;
+    private Integer userId;
 }

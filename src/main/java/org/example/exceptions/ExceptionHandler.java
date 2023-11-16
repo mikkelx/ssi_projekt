@@ -1,10 +1,7 @@
 package org.example.exceptions;
 
-import org.example.exceptions.ResourceNotFoundException;
-
 import java.sql.SQLException;
 
-import static spark.Spark.*;
 import static spark.Spark.exception;
 
 public class ExceptionHandler {
@@ -26,8 +23,15 @@ public class ExceptionHandler {
         response.body(e.getMessage());
     };
 
+    private static spark.ExceptionHandler<ResourceAlreadyExistsException> handleDuplicateException = (e, request, response) -> {
+        response.type("application/json");
+        response.status(500);
+        response.body("Resource already exists.");
+    };
+
     public static void registerExceptions() {
         exception(ResourceNotFoundException.class, handleResourceNotFoundException);
         exception(SQLException.class, handleSQLException);
+        exception(ResourceAlreadyExistsException.class, handleDuplicateException);
     }
 }

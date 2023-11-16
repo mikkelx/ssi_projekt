@@ -38,13 +38,6 @@ public class GenreDao {
         return genreDao;
     }
 
-    //TODO - method to save only uniqie values of Genre
-    // We would like to avoid scenario with duplicated Genres
-//    public Integer create(Genre genre) throws SQLException {
-//        genreDao.createIfNotExists(genre)''
-//
-//    }
-
     public Genre getGenreByName(String genreName) throws SQLException, ResourceNotFoundException {
         QueryBuilder<Genre, Integer> genreQueryBuilder = genreDao.queryBuilder();
         Where<Genre, Integer> where = genreQueryBuilder.where();

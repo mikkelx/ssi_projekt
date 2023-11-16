@@ -1,11 +1,8 @@
 package org.example.entity;
 
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.*;
-
-import java.util.List;
 
 @DatabaseTable(tableName = "Genre")
 @AllArgsConstructor
@@ -16,7 +13,7 @@ import java.util.List;
 public class Genre {
     @DatabaseField(generatedId = true, columnName = "genreId")
     private int id;
-    @DatabaseField(columnName = "name")
+    @DatabaseField(columnName = "name", unique = true)
     private String genreName;
 
     public Genre(String genreName) {

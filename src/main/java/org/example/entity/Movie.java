@@ -22,7 +22,7 @@ public class Movie {
     private Date releaseDate;
     @DatabaseField(columnName = "rating")
     private double rating;
-    @DatabaseField(columnName = "genreId", foreign = true)
+    @DatabaseField(columnName = "genreId", foreign = true, foreignAutoRefresh = true)
     private Genre genre;
 
     public Movie(String title, Date releaseDate, double rating, Genre genre) {
