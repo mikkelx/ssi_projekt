@@ -1,12 +1,12 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.Service.UserService;
 import org.example.dao.UserDao;
 import org.example.entity.User;
 import org.example.exceptions.ResourceNotFoundException;
 import org.example.request.LoginRequest;
 import org.example.request.RegisterRequest;
+import org.example.service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Route;

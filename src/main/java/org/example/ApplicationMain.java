@@ -1,11 +1,11 @@
 package org.example;
 
-import org.example.Service.SecurityService;
 import org.example.controller.FavouriteController;
 import org.example.controller.GenreController;
 import org.example.controller.MovieController;
 import org.example.controller.UserController;
 import org.example.exceptions.ExceptionHandler;
+import org.example.service.SecurityService;
 import spark.Spark;
 
 public class ApplicationMain {

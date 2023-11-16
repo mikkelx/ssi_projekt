@@ -10,6 +10,8 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static spark.Spark.*;
@@ -64,9 +66,36 @@ public class MovieController {
         }
     };
 
+    public Route getMoviesByReleaseDate = (Request request, Response response) -> {
+        response.type("application/json");
+        String releaseDateString = request.params("releaseDate");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date releaseDate = dateFormat.parse(releaseDateString);
+        List<Movie> movies = movieDao.getMoviesByReleaseDate(releaseDate);
+        return objectMapper.writeValueAsString(movies);
+    };
+
+
+    public Route getMoviesByRating = (Request request, Response response) -> {
+        response.type("application/json");
+        double minRating = Double.parseDouble(request.params("minRating"));
+        List<Movie> movies = movieDao.getMoviesByRating(minRating);
+        return objectMapper.writeValueAsString(movies);
+    };
+
+    public Route getMoviesByGenreName = (Request request, Response response) -> {
+        response.type("application/json");
+        String genreName = request.params("genreName");
+        List<Movie> movies = movieDao.getMoviesByGenreName(genreName);
+        return objectMapper.writeValueAsString(movies);
+    };
+
     public void registerRoutes() {
         get("/movie", getAllMovies);
         get("/movie/:movieId", getMovieById);
+        get("/movie/byDate/:releaseDate", getMoviesByReleaseDate);
+        get("/movie/byRating/:minRating", getMoviesByRating);
+        get("/movie/byGenre/:genreName", getMoviesByGenreName);
         post("/admin/movie", createMovie);
         delete("/admin/movie/:movieId", deleteMovie);
     }
