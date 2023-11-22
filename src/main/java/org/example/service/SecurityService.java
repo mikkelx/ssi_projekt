@@ -36,6 +36,12 @@ public class SecurityService {
     }
 
     public void registerSecurityRoutes() {
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.header("Access-Control-Allow-Headers", "*");
+        });
+
         before("/protected/*", (request, response) -> {
             String authHeader = request.headers("Authorization");
             Claims claims = validateAndDecodeJWT(authHeader);
