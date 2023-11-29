@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dao.UserDao;
 import org.example.entity.User;
+import org.example.exceptions.RegisterException;
 import org.example.exceptions.ResourceNotFoundException;
 import org.example.general.Message;
 import org.example.request.LoginRequest;
@@ -39,17 +40,19 @@ public class UserService {
         return instance;
     }
 
-    public String register(RegisterRequest registerRequest) {
+    public String register(RegisterRequest registerRequest) throws RegisterException {
         if(!isRegisterRequestValid(registerRequest)) {
-            return "Register request is invalid";
+            throw new RegisterException("Register request is invalid");
         }
 
         if(checkIfUserExists(registerRequest.getUsername())) { //409 resource conflict
-            return "User with username: " + registerRequest.getUsername() + " is already registered!";
+            throw new RegisterException("User with username: "
+                    + registerRequest.getUsername()
+                    + " is already registered!");
         }
 
         if(!verifyPassword(registerRequest.getPassword(), registerRequest.getPasswordRepeated())) {
-            return "Password is not matching conditions";
+            throw new RegisterException("Password is not matching conditions");
         }
 
         User user = new User(

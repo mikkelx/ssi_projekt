@@ -30,6 +30,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.blocked = false;
         this.favouriteMovies = new ArrayList<>();
     }
 }

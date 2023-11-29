@@ -51,7 +51,7 @@ public class UserController {
     public Route registerUser = (Request request, Response response) -> {
         response.type("application/json");
         RegisterRequest registerRequest = objectMapper.readValue(request.body(), RegisterRequest.class);
-        String id = userService.register(registerRequest);
+        userService.register(registerRequest);
         response.status(201);
         return "";
     };

@@ -23,6 +23,12 @@ public class ExceptionHandler {
         response.body(e.getMessage());
     };
 
+    private static spark.ExceptionHandler<RegisterException> handleRegisterException = (e, request, response) -> {
+        response.type("application/json");
+        response.status(400);
+        response.body(e.getMessage());
+    };
+
     private static spark.ExceptionHandler<ResourceAlreadyExistsException> handleDuplicateException = (e, request, response) -> {
         response.type("application/json");
         response.status(500);
@@ -32,6 +38,7 @@ public class ExceptionHandler {
     public static void registerExceptions() {
         exception(ResourceNotFoundException.class, handleResourceNotFoundException);
         exception(SQLException.class, handleSQLException);
+        exception(RegisterException.class, handleRegisterException);
         exception(ResourceAlreadyExistsException.class, handleDuplicateException);
     }
 }
