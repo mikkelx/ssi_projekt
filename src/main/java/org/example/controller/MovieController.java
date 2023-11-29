@@ -66,6 +66,20 @@ public class MovieController {
         }
     };
 
+    public Route updateMovie = (Request request, Response response) -> {
+        response.type("application/json");
+        Movie movie = objectMapper.readValue(request.body(), Movie.class);
+        int updated = movieDao.getMovieDao().update(movie);
+        if (updated == 1) {
+            response.status(204);
+            return "";
+        } else {
+            throw new ResourceNotFoundException(DOMAIN, movie.getId());
+        }
+    };
+
+
+
     public Route getMoviesByReleaseDate = (Request request, Response response) -> {
         response.type("application/json");
         String releaseDateString = request.params("releaseDate");
@@ -97,6 +111,7 @@ public class MovieController {
         get("/movie/byRating/:minRating", getMoviesByRating);
         get("/movie/byGenre/:genreName", getMoviesByGenreName);
         post("/admin/movie", createMovie);
+        put("/admin/movie", updateMovie);
         delete("/admin/movie/:movieId", deleteMovie);
     }
 

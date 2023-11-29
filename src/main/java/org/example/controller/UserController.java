@@ -75,11 +75,44 @@ public class UserController {
         return jwt;
     };
 
+    public Route updateUser = (Request request, Response response) -> {
+        response.type("application/json");
+        User newUser = objectMapper.readValue(request.body(), User.class);
+        User existingUser = userDao.getUserDao().queryForId(newUser.getId());
+        existingUser.setUsername(newUser.getUsername());
+        existingUser.setRole(newUser.getRole());
+        existingUser.setBlocked(newUser.getBlocked());
+        int updated = userDao.getUserDao().update(existingUser);
+        if (updated == 1) {
+            response.status(204);
+            return "";
+        } else {
+            throw new ResourceNotFoundException(DOMAIN, newUser.getId());
+        }
+    };
+
+    public Route changePassword = (Request request, Response response) -> {
+        response.type("application/json");
+        String password = request.body();
+        Integer userId = Integer.parseInt(request.params("userId"));
+        User user = userDao.getUserDao().queryForId(userId);
+        user.setPassword(password);
+        int updated = userDao.getUserDao().update(user);
+        if (updated == 1) {
+            response.status(204);
+            return "";
+        } else {
+            throw new ResourceNotFoundException(DOMAIN, userId);
+        }
+    };
+
     public void registerRoutes() {
         get("/admin/user", getAllUsers);
         get("/admin/user/:userId", getUserById);
         post("/user/register", registerUser);
         post("/user/login", loginUser);
+        put("/admin/user", updateUser);
+        put("/admin/user/changePassword/:userId", changePassword);
         delete("/admin/user/:userId", deleteUser);
     }
 

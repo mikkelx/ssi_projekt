@@ -22,6 +22,8 @@ public class User {
     private String password;
     @DatabaseField(columnName = "role")
     private String role;
+    @DatabaseField(columnName = "isBlocked")
+    private Boolean blocked;
     private List<Movie> favouriteMovies;
 
     public User(String username, String password, String role) {

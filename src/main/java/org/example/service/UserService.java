@@ -69,6 +69,9 @@ public class UserService {
             if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
                 halt(401, "Invalid username or password");
             }
+            if (user.getBlocked()) {
+                halt(401, "User is blocked");
+            }
 
             String jwt = securityService.createJWT(user.getId().toString(), user.getUsername(), user.getRole());
 
