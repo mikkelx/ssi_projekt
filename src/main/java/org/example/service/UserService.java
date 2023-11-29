@@ -1,8 +1,11 @@
 package org.example.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dao.UserDao;
 import org.example.entity.User;
 import org.example.exceptions.ResourceNotFoundException;
+import org.example.general.Message;
 import org.example.request.LoginRequest;
 import org.example.request.RegisterRequest;
 
@@ -17,6 +20,8 @@ public class UserService {
     private static UserDao userDao;
 
     private static SecurityService securityService;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private UserService() {
         userDao = UserDao.getInstance();
@@ -72,13 +77,14 @@ public class UserService {
             if (user.getBlocked()) {
                 halt(401, "User is blocked");
             }
+            Message jwt = new Message(securityService.createJWT(user.getId().toString(), user.getUsername(), user.getRole()));
 
-            String jwt = securityService.createJWT(user.getId().toString(), user.getUsername(), user.getRole());
-
-            return jwt;
+            return objectMapper.writeValueAsString(jwt);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ResourceNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
