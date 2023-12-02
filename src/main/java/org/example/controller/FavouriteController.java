@@ -37,7 +37,7 @@ public class FavouriteController {
     };
 
     public void registerRoutes() {
-        get("/protected/favourite", getFavouritesForUser);
+        get("/protected/favourite/:userId", getFavouritesForUser);
         post("/protected/favourite", createFavourite);
     }
 }
