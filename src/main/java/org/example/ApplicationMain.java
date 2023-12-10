@@ -8,12 +8,17 @@ import org.example.exceptions.ExceptionHandler;
 import org.example.service.SecurityService;
 import spark.Spark;
 
+import static spark.Spark.before;
+import static spark.Spark.options;
+
 public class ApplicationMain {
     private static SecurityService securityService = SecurityService.getInstance();
 
     public static void main(String[] args) {
 
         Spark.init();
+
+        securityService.registerCORS();
 
         UserController userController = new UserController();
         MovieController movieController = new MovieController();

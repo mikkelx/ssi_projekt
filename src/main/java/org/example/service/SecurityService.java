@@ -8,8 +8,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
 
-import static spark.Spark.before;
-import static spark.Spark.halt;
+import static spark.Spark.*;
 
 public class SecurityService {
 
@@ -35,13 +34,29 @@ public class SecurityService {
         return instance;
     }
 
-    public void registerSecurityRoutes() {
+    public void registerCORS() {
         before((request, response) -> {
-            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Origin", "http://localhost:3000");
             response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             response.header("Access-Control-Allow-Headers", "*");
         });
 
+        options("/*", (request, response) -> {
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+    }
+
+    public void registerSecurityRoutes() {
         before("/protected/*", (request, response) -> {
             String authHeader = request.headers("Authorization");
             Claims claims = validateAndDecodeJWT(authHeader);

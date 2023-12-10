@@ -6,6 +6,7 @@ import org.example.dao.UserDao;
 import org.example.entity.User;
 import org.example.exceptions.RegisterException;
 import org.example.exceptions.ResourceNotFoundException;
+import org.example.general.LoginResponse;
 import org.example.general.Message;
 import org.example.request.LoginRequest;
 import org.example.request.RegisterRequest;
@@ -80,9 +81,13 @@ public class UserService {
             if (user.getBlocked()) {
                 halt(401, "User is blocked");
             }
-            Message jwt = new Message(securityService.createJWT(user.getId().toString(), user.getUsername(), user.getRole()));
 
-            return objectMapper.writeValueAsString(jwt);
+            LoginResponse loginResponse = new LoginResponse(
+                    securityService.createJWT(user.getId().toString(), user.getUsername(), user.getRole()),
+                    user.getRole()
+            );
+
+            return objectMapper.writeValueAsString(loginResponse);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ResourceNotFoundException e) {
